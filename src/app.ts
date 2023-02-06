@@ -1,5 +1,5 @@
 import express,{Request, Response} from "express";
-import {localDataSource} from "../app-data-source";
+import {localDataSource} from "./app-data-source";
 
 //creando instancia con la configuracion de la bases de datos local
 localDataSource
