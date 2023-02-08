@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany,ManyToOne} from "typeorm"
 import {Usuario} from "./Usuario"
+import {Pedido} from "./Pedido"
 
 @Entity()
 export class Factura {
@@ -13,13 +14,12 @@ export class Factura {
     hora:string;
     
     @Column("money")
-    monto_total:number;
+    montoTotal:number;
     
-    @Column("json")
-    pedido:object;
+    @OneToMany(()=>Pedido, (pedido:any)=>pedido.factura)
+    pedido:Pedido[];
     
-    @OneToOne(()=>Usuario)
-    @JoinColumn()
-    cliente:Usuario;
+    @ManyToOne(()=>Usuario,(usuario:any)=>usuario.factura)
+    usuario:Usuario;
     
 }

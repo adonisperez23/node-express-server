@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm"
+import {Factura} from "./Factura"
 
 @Entity()
 export class Usuario {
@@ -25,4 +26,13 @@ export class Usuario {
     
     @Column("boolean")
     esAdmin:boolean;
+    
+    @Column("boolean")
+     activo:boolean;
+    
+    @CreateDateColumn()
+    FechaRegistro:string
+    
+    @OneToMany(()=>Factura,(factura:any)=> factura.usuario)
+    factura:Factura[];
 }

@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm"
-import {Menu} from "./Menu"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm"
+import {Producto} from "./Producto"
 
 @Entity()
 export class Foto {
@@ -10,15 +10,14 @@ export class Foto {
         type:"varchar",
         length:20
     })
-    nombre:string;
+    nombreFoto:string;
     
     @Column({
         type:"varchar",
         length:100
     })
-    url:string;
+    direccionUrl:string;
     
-    @OneToOne(()=>Menu)
-    @JoinColumn()
-    menu:Menu;
+    @ManyToOne(()=>Producto, (producto:any)=> producto.foto)
+    producto:Producto;
 }
