@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, BaseEntity } from "typeorm"
 import {Factura} from "./Factura"
 
 @Entity()
-export class Usuario {
+export class Usuario extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
     
@@ -20,15 +20,20 @@ export class Usuario {
     
     @Column({
         type:"varchar",
-        length:50
+        length:50,
+        unique:true
     })
     email:string;
     
-    @Column("boolean")
+    @Column({
+        type:"boolean",
+        default:false})
     esAdmin:boolean;
     
-    @Column("boolean")
-     activo:boolean;
+    @Column({
+        type:"boolean",
+        default:true})
+    activo:boolean;
     
     @CreateDateColumn()
     FechaRegistro:string
