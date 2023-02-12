@@ -1,5 +1,8 @@
 import {Request, Response} from "express"
 import {Usuario} from "../entidades/Usuario"
+import jwt from "jsonwebtoken"
+import bcryp from "bcryptjs"
+import app from "../app"
 
 export const holaMundo = (req:Request,res:Response) =>{
     res.send("hola mundo");
@@ -34,10 +37,11 @@ export const obtenerUsuarioId = async (req:Request, res:Response)=>{
 }
 
 
-export const crearUsuario = async (req:Request,res:Response)=>{
+export const registrarUsuario = async (req:Request,res:Response)=>{
     
     try{
-        let {nombre, telefono, email} = req.body;
+        let {nombre, telefono, email, clave} = req.body;
+        
         
         const usuario = new Usuario();
         const buscarEmail = await Usuario.findOneBy({email:email})
@@ -49,13 +53,37 @@ export const crearUsuario = async (req:Request,res:Response)=>{
         usuario.nombre = nombre;
         usuario.telefono = telefono;
         usuario.email = email;
-        
+        usuario.clave = await bcryp.hash(clave,8); // encripta la clave ingresada por el usuario
         
         await usuario.save();
          
         res.status(201).json({usuarioCreado:`${usuario}`});
     }catch(error){
         res.status(400).json({mensaje:`ha ocurrido un error:${error}`})
+    }
+}
+
+export const autenticarUsuario = async (req:Request, res:Response) =>{
+    try{
+        let {email,clave} = req.body;
+        const usuario = await Usuario.findOneBy({email:email})
+        
+        if(!usuario){
+            return res.status(404).json({error:`Cuenta email no valida`}) //404 not found
+        }
+        
+        await bcryp.compare(clave,usuario.clave)
+            .then(()=>{
+                const payload = {autenticado:true};
+                const token = jwt.sign(payload,app.get('llave'),{expiresIn:"1h"})
+                res.status(200).json({mensaje:`Usuario autenticado con exito`, token:token});
+            })
+            .catch((error:any)=>{
+                res.status(401).json({mensaje:"Clave Invalida", error:error});
+            });
+        
+    }catch(error){
+        res.status(400).json({Error:`ha ocurrido un error:${error}`})
     }
 }
 
@@ -90,4 +118,21 @@ export const eliminarUsuario = async (req:Request, res:Response) =>{
     }catch(error){
         res.status(400).json({mensaje:`ha ocurrido un error: ${error}`})
     }
+}
+
+export const verificacionToken = async (req:Request, res:Response, next:any)=>{
+    let token = req.headers['authorization'];
+    console.log("token sin arreglar ",token)
+    if(!token){
+        return res.status(403).json({mensaje:`Es necesario un token de autorizacion`})
+    }
+    token = token.slice(7, token.length)
+    console.log("token arreglado ", token)
+    try {
+        const decodificar = await jwt.verify(token,app.get('llave'))
+        if(decodificar){next()}    
+    }catch(error){
+        res.json({mensaje:"token invalido"})
+    }
+    
 }

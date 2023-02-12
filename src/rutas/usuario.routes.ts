@@ -1,8 +1,10 @@
 import {Router} from "express";
 import {
+    verificacionToken,
     obtenerUsuarios,
     obtenerUsuarioId,
-    crearUsuario, 
+    registrarUsuario, 
+    autenticarUsuario,
     actualizarUsuario,
     eliminarUsuario,
     holaMundo
@@ -10,9 +12,12 @@ import {
 
 const router = Router();
 
-router.get('/api/usuarios',obtenerUsuarios);
+
+
+router.get('/api/usuarios',verificacionToken,obtenerUsuarios);
 router.get('/api/usuario/:id',obtenerUsuarioId);
-router.post('/api/usuario',crearUsuario);
+router.post('/api/registrar/usuario',registrarUsuario);
+router.post('/api/autenticar/usuario', autenticarUsuario);
 router.put('/api/usuario/:id',actualizarUsuario);
 router.delete('/api/usuario/:id',eliminarUsuario);
 

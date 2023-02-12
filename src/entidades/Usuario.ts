@@ -26,6 +26,12 @@ export class Usuario extends BaseEntity {
     email:string;
     
     @Column({
+        type:"varchar",
+        length:60
+        })
+    clave:string;
+    
+    @Column({
         type:"boolean",
         default:false})
     esAdmin:boolean;
