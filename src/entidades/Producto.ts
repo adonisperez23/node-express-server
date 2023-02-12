@@ -25,7 +25,7 @@ export class Producto extends BaseEntity {
     })
     descripcion:string;
     
-    @Column("money")
+    @Column("numeric")
     precio:number;
     
     @Column("boolean")

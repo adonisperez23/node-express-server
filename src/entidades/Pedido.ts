@@ -13,8 +13,8 @@ export class Pedido extends BaseEntity{
     })
     descripcion:string;
     
-    @Column("money")
-    precio: string;
+    @Column("numeric")
+    precio: number;
     
     @Column("int")
     cantidad:number;

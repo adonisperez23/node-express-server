@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import rutasUsuario from "./rutas/usuario.routes"
+import rutasProducto from "./rutas/producto.routes"
 
 const llaves = require("../llaves")
 //instanciacion del modulo de express en la variable app
@@ -15,6 +16,9 @@ app.use(cors());// permite hacer peticiones entre servidores externos
 
 
 //rutas para entidad usuario
-app.use(rutasUsuario);
 
-export default app;
+app.use(rutasUsuario)
+//rutas para entidad producto
+app.use(rutasProducto);;
+
+export default app
