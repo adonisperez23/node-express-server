@@ -20,9 +20,9 @@ async function main(){
         await app.listen(PORT, ()=>{
             console.log(`servidor encendido en el puerto ${PORT}`);
         })
-        }catch(error){
-            console.log(error);
-        }
+    }catch(error){
+        console.log(error);
+    }
         
     }
     
