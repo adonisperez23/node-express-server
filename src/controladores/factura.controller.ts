@@ -3,6 +3,7 @@ import {Factura} from "../entidades/Factura";
 import {Usuario} from "../entidades/Usuario";
 import {Pedido} from "../entidades/Pedido";
 import {validate} from "class-validator";
+import {mandarMensajeWs, armarMensaje} from "../utils/clienteWhatsapp.util"
 
 export const obtenerFacturas = async (req:Request,res:Response) =>{
 
@@ -50,8 +51,9 @@ export const generarFactura = async (req:Request,res:Response)=>{
             usuario,
             listaPedidos} = req.body;
 
+        // const wsCliente = new WhatsappCliente();
         const buscarUsuario = await Usuario.findOneBy({id:usuario});
-
+        // let pedidosFactura:Array<Pedido>=[]
         if(!buscarUsuario){
             return res.status(400).json({error:"El usuario que selecciono no existe, ingrese otro nuevamente"});
         }
@@ -66,6 +68,13 @@ export const generarFactura = async (req:Request,res:Response)=>{
           return res.status(406).send(errores);
         } else {
             await factura.save();
+            // await wsCliente.sendMsg('584148942782', "hola adonis")
+                            // .then((response:any)=>{
+                            //   console.log("mensaje enviado", response)
+                            // })
+                            // .catch((e:any)=>{
+                            //   console.log("ocurrio un error whatsapp",e)
+                            // })
         }
 
         listaPedidos.forEach(async (pedido:Pedido) => {  // Una factura puede contener varios pedidos,
@@ -84,11 +93,17 @@ export const generarFactura = async (req:Request,res:Response)=>{
             return res.status(406).send(errores)
           } else {
             await entidadPedido.save();
+            // pedidosFactura.push(entidadPedido)
           }
 
         })
 
-        res.status(201).json({mensaje:`Factura nro: ${factura.id} registrada con exito`});
+        const mensaje = await armarMensaje(factura.fechaHora,buscarUsuario.telefono, buscarUsuario.nombre, listaPedidos,factura.montoTotal);
+        if(mensaje.length > 0){
+          const mensajeEnviado = await mandarMensajeWs(mensaje);
+        }
+
+        res.status(201).json({mensaje:`Factura nro: ${factura.id} registrada con exito. Enviando Pedido...`});
 
     }catch(error){
         res.status(400).json({error:`Ha ocurrido un error al generar factura${error}`})

@@ -1,9 +1,13 @@
 import {Request, Response} from "express";
 import {Usuario} from "../entidades/Usuario";
-import jwt from "jsonwebtoken";
-import bcryp from "bcryptjs";
+import {generarToken,verificarToken} from "../utils/jwt.util";
+import {generarHash,compararHash} from "../utils/bcrypHash.util"
 import app from "../app";
 import { validate , minLength} from "class-validator";
+import {Client, LocalAuth} from "whatsapp-web.js";
+import {crearSesion} from "../utils/clienteWhatsapp.util"
+// import {image as imageQr} from "qr-image";
+// const path = require('path');
 
 export const holaMundo = (req:Request,res:Response) =>{
     res.send("hola mundo");
@@ -59,7 +63,7 @@ export const registrarUsuario = async (req:Request,res:Response)=>{
         if(!esClaveValida){
             return res.status(400).json({error:"La clave debe contener mas de 5 caracteres"})
         } else{
-          usuario.clave = await bcryp.hash(clave,10); // encripta la clave ingresada por el usuario
+          usuario.clave = await generarHash(clave); // encripta la clave ingresada por el usuario
         }
 
         const errores = await validate(usuario, { validationError: { target: false } }); // no devuelve el objeto a validar en la respuesta enviada al cliente
@@ -85,10 +89,10 @@ export const autenticarUsuario = async (req:Request, res:Response) =>{
             return res.status(404).json({error:"Cuenta email no existe"}) //404 not found
         }
 
-        await bcryp.compare(clave,usuario.clave)
+        await compararHash(clave,usuario.clave)
             .then(()=>{
                 const payload = {autenticado:true};
-                const token = jwt.sign(payload,app.get('llave'),{expiresIn:"1h"})
+                const token = generarToken(payload);
                 res.status(200).json({mensaje:`Usuario autenticado con exito`, token:token});
             })
             .catch((error:any)=>{
@@ -153,10 +157,28 @@ export const verificacionToken = async (req:Request, res:Response, next:any)=>{
     token = token.slice(7, token.length)
     console.log("token arreglado ", token)
     try {
-        const decodificar = await jwt.verify(token,app.get('llave'))
+        const decodificar = await verificarToken(token)
         if(decodificar){next()}
     }catch(error){
         res.json({mensaje:"Token invalido"})
     }
 
+}
+
+export const iniciarSessionWhatsapp = async (req:Request, res:Response)=>{
+
+  try {
+
+    let autenticado = await crearSesion();
+
+    if(autenticado){
+      res.send("Ya existe una session de Whatsapp web")
+    } else {
+      res.send("Iniciando autenticacion de Usuario")
+    }
+
+
+  } catch (error) {
+      console.log(error)
+  }
 }

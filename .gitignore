@@ -1,5 +1,18 @@
+#modulos de node
 node_modules
+
+# carpeta donde estan los compilados
 dist
+
+#Achivos de configuracion de la base de datos
 db.ts
 db.js
+#llave secreta de jwt
 llaves.js
+
+#archivos temporales
+/tmp/*
+!/tmp
+
+#carpeta donde contiene los datos de session de whatsapp web
+/.wwebjs_auth
