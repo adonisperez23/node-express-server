@@ -7,6 +7,6 @@ export async function generarHash (clave:string):Promise<string>{
   return await bcryp.hash(clave,saltos);
 }
 
-export async function compararHash(hash:string,clave:string):Promise<boolean>{
-  return await bcryp.compare(hash,clave);
+export async function compararHash(clave:string,hash:string):Promise<any>{
+  return await bcryp.compare(clave,hash);
 }

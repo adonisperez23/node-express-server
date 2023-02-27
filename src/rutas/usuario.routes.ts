@@ -8,7 +8,9 @@ import {
     actualizarUsuario,
     eliminarUsuario,
     iniciarSessionWhatsapp,
-    holaMundo
+    enviarEmail,
+    cambiarClave,
+    verificarTokenCambioClave
     } from "../controladores/usuario.controller"
 
 const router = Router();
@@ -20,9 +22,9 @@ router.get('/api/usuario/:id',obtenerUsuarioId);
 router.get('/api/sesion-whatsapp', iniciarSessionWhatsapp)
 router.post('/api/registrar/usuario',registrarUsuario);
 router.post('/api/autenticar/usuario', autenticarUsuario);
+router.post('/api/enviar',enviarEmail);
+router.put('/api/cambio-clave/:token',verificarTokenCambioClave,cambiarClave)
 router.put('/api/usuario/:id',actualizarUsuario);
 router.delete('/api/usuario/:id',eliminarUsuario);
-
-router.get('/',holaMundo)
 
 export default router;

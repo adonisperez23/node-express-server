@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {Usuario} from "../entidades/Usuario";
 import {generarToken,verificarToken} from "../utils/jwt.util";
 import {generarHash,compararHash} from "../utils/bcrypHash.util"
+import {enviarCorreo} from "../utils/nodemailTransporter.util"
 import app from "../app";
 import { validate , minLength} from "class-validator";
 import {Client, LocalAuth} from "whatsapp-web.js";
@@ -59,7 +60,7 @@ export const registrarUsuario = async (req:Request,res:Response)=>{
         usuario.telefono = telefono;
         usuario.email = email;
 
-        const esClaveValida = await minLength(clave,5)
+        let esClaveValida = await minLength(clave,5)
         if(!esClaveValida){
             return res.status(400).json({error:"La clave debe contener mas de 5 caracteres"})
         } else{
@@ -89,15 +90,15 @@ export const autenticarUsuario = async (req:Request, res:Response) =>{
             return res.status(404).json({error:"Cuenta email no existe"}) //404 not found
         }
 
-        await compararHash(clave,usuario.clave)
-            .then(()=>{
-                const payload = {autenticado:true};
-                const token = generarToken(payload);
-                res.status(200).json({mensaje:`Usuario autenticado con exito`, token:token});
-            })
-            .catch((error:any)=>{
-                res.status(401).json({error:"Clave Invalida"});
-            });
+        const ES_CLAVE_VALIDA =  await compararHash(clave,usuario.clave)
+
+        if(ES_CLAVE_VALIDA){
+          const payload = {autenticado:true};
+          const token = generarToken(payload);
+          res.status(200).json({mensaje:`Usuario autenticado con exito`, token:token});
+        } else{
+          res.status(401).json({error:"Clave Invalida"});
+        }
 
     }catch(error){
         res.status(400).json({error:`Ha ocurrido un error:${error}`})
@@ -106,7 +107,7 @@ export const autenticarUsuario = async (req:Request, res:Response) =>{
 
 export const actualizarUsuario = async (req:Request, res:Response)=>{
     try{
-        const usuario = await Usuario.findOneBy({id: parseInt(req.params.id)});
+        let usuario = await Usuario.findOneBy({id: parseInt(req.params.id)});
 
         if(!usuario){
           return res.status(404).json({error:`Usuario con el id no existe:${req.params.id}`});
@@ -134,7 +135,7 @@ export const actualizarUsuario = async (req:Request, res:Response)=>{
 
 export const eliminarUsuario = async (req:Request, res:Response) =>{
     try{
-        const usuario = await Usuario.findOneBy({id: parseInt(req.params.id)});
+        let usuario = await Usuario.findOneBy({id: parseInt(req.params.id)});
 
         if(!usuario){
             return res.status(404).json({error:"Usuario que desea eliminar con el id no existe"});
@@ -157,10 +158,10 @@ export const verificacionToken = async (req:Request, res:Response, next:any)=>{
     token = token.slice(7, token.length)
     console.log("token arreglado ", token)
     try {
-        const decodificar = await verificarToken(token)
+        let decodificar = await verificarToken(token)
         if(decodificar){next()}
     }catch(error){
-        res.json({mensaje:"Token invalido"})
+        res.json({error:"Token invalido"})
     }
 
 }
@@ -181,4 +182,109 @@ export const iniciarSessionWhatsapp = async (req:Request, res:Response)=>{
   } catch (error) {
       console.log(error)
   }
+}
+
+export const enviarEmail = async (req:Request, res:Response) =>{
+
+  try {
+
+    let {email} = req.body;
+
+    let usuario = await Usuario.findOneBy({email:email});
+
+    if(!usuario){
+      res.status(404).json({
+        error:"Email ingresado no es validado. Por favor, verifique su email"
+      })
+    }
+    let payload = {email:email};
+    let token = generarToken(payload);
+    let mensajeEnviado = await enviarCorreo(email, token);
+
+    if(!mensajeEnviado){
+      res.status(400).json({
+        error:"Ha ocurrido un error al enviar correo de recuperacion de contraseña"
+      })
+    }
+    res.status(200).json({
+      mensaje:`Correo de recuperacion de clave ha sido enviado: ${mensajeEnviado}`
+    })
+
+  } catch (error) {
+    res.status(400).json({
+      error:`Ha ocurrido un error al enviar un email: ${error}`
+    })
+  }
+}
+
+export const cambiarClave = async (req:Request, res:Response) =>{
+  try {
+    let {email,passwordUno, passwordDos} = req.body;
+
+    let usuario = await Usuario.findOneBy({
+      email:email
+    })
+
+    if(!usuario){
+      res.status(400).json({
+        error:"Email incorrecto, verifique email ingresado"
+      })
+    }
+
+    if(passwordUno !== passwordDos){
+      res.status(404).json({
+        error:"Las contraseñas Ingresadas no coinciden, intentelo nuevamente"
+      })
+    }
+
+    let esClaveValida = await minLength(passwordUno,5);
+    if(!esClaveValida){
+        return res.status(400).json({error:"La nueva clave debe contener mas de 5 caracteres"});
+    } else{
+      usuario!.clave = await generarHash(passwordUno); // encripta la clave ingresada por el usuario
+      console.log('nueva clave',usuario!.clave)
+    }
+
+    await usuario!.save(); // el signo de exclamacion le indica al compilador TS que el usuario no es valor de tipo null
+
+
+    res.status(200).json({
+      mensaje:"La clave ha sido cambiada con exito"
+    })
+
+  } catch (error) {
+    res.status(400).json({
+      error:`Ha ocurrido un error al cambiar clave: ${error}`
+    })
+  }
+}
+
+export const verificarTokenCambioClave = async(req:Request,res:Response, next:any)=>{
+  try {
+
+    let {token} = req.params;
+
+    if(token.length === 0){
+      return res.status(403).json({
+        error:`Es necesario un token de autorizacion para cambiar su nueva contraseña`})
+      }
+
+    let decodificar = await verificarToken(token)
+
+    if(decodificar){
+      next()
+    } else {
+      res.status(400).json({
+        error:`Token invalido`
+      })
+    }
+
+  } catch (error) {
+    res.status(400).json({
+      error:`Ha ocurrido un error al verificar token para cambio de clave: ${error}`
+    })
+  }
+
+
+
 }
