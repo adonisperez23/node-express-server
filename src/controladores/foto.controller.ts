@@ -67,7 +67,7 @@ export const subirFoto = async (req:Request,res:Response)=>{
           return res.status(406).send(errores);
         } else {
           await foto.save();
-          res.status(201).json({mensaje:"Foto registrada con exito"})
+          res.status(201).json({mensaje:"Foto cargada con exito"})
         }
 
     }catch(error){
@@ -103,7 +103,7 @@ export const modificarFoto = async (req:Request, res:Response)=>{
     }
 }
 
-export const borrarFoto= async (req:Request, res:Response) =>{
+export const borrarFoto = async (req:Request, res:Response) =>{
 
     try{
         const foto = await Foto.findOneBy({id: parseInt(req.params.id)});
@@ -118,4 +118,18 @@ export const borrarFoto= async (req:Request, res:Response) =>{
     }catch(error){
         res.status(400).json({error:`Ha ocurrido un error al eliminar foto: ${error}`})
     }
+}
+
+export const cargarImagen = async (req:Request, res:Response) => {
+
+  try {
+      res.status(200).json({
+        mensaje:`Imagen cargada con exito!!`,
+        path:req.file!.path,
+        nombreArchivo:req.file!.originalname
+      })
+
+  } catch (error) {
+    res.status(400).json({error:"Ha ocurrido un error al cargar imagen"})
+  }
 }

@@ -1,15 +1,13 @@
 import nodemailer from 'nodemailer';
-
-  const EMAIL = 'zona09far@gmail.com'
-  const CLAVE = 'wkfpnzitepywlwst'
+const llaves = require('../../llaves');
 
   let transportador = nodemailer.createTransport({
     host:'smtp.gmail.com',
     port:587,
     auth: {
       type:"login",
-      user: EMAIL,
-      pass: CLAVE,
+      user: llaves.email,
+      pass: llaves.clave,
     },
     // tls:{
     //
@@ -24,7 +22,7 @@ export async function enviarCorreo(correo:string, token:string):Promise<any>{
       }
 
       return await transportador.sendMail({
-        from:EMAIL,
+        from:llaves.email,
         to:correo,
         subject:"Recuperacion de contraseña",
         html:`

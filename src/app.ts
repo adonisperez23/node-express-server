@@ -11,6 +11,7 @@ const llaves = require("../llaves")
 //instanciacion del modulo de express en la variable app
 const app = express();
 
+
 app.set('llave',llaves.llave); // establece la clave con el contenido de la variable llaves usadas con el modulo jsonWebToken
 app.use(express.urlencoded({extended:false})); //middleware para que el servidor renozca peticiones como objetos de string o arrays
 app.use(express.json()); // middleware que hace que el servidor reconozca la informacion recibida al servidor como formato json.
