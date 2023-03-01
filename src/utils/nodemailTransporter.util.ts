@@ -1,27 +1,26 @@
 import nodemailer from 'nodemailer';
 const llaves = require('../../llaves');
 
+//Modulo para enviar correos electronicos
   let transportador = nodemailer.createTransport({
-    host:'smtp.gmail.com',
+    host:'smtp.gmail.com', // HOST del Servicio smtp de google
     port:587,
     auth: {
       type:"login",
-      user: llaves.email,
-      pass: llaves.clave,
+      user: llaves.email, // Email del correo electronico que enviara el mensaje
+      pass: llaves.clave, // Para obtener esta clave se debe configurar el correo con verificacion de dos pasos
+                          // luego generar una clave en aplicaciones de terceros.
     },
-    // tls:{
-    //
-    // }
   })
 
 export async function enviarCorreo(correo:string, token:string):Promise<any>{
 
-      const verificar =  await transportador.verify()
+      const verificar =  await transportador.verify() // Verifica que la conexion sea establecida
       if(!verificar){
         return verificar
       }
 
-      return await transportador.sendMail({
+      return await transportador.sendMail({ // envia el mensaje con los siguientes parametros
         from:llaves.email,
         to:correo,
         subject:"Recuperacion de contraseña",

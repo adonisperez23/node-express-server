@@ -1,5 +1,5 @@
 import {Client, LocalAuth} from "whatsapp-web.js";
-import open from "open"
+import open from "open" // Modulo para abrir archivos
 import {image as imageQr} from "qr-image";
 const fs = require('fs')
 const path = require('path')
@@ -7,13 +7,13 @@ const path = require('path')
 const generarImageQr = (base64:string) =>{
   const path = `${process.cwd()}/tmp`;
     let qr_svg = imageQr(base64, { type: "png", margin: 4 });
-    qr_svg.pipe(require("fs").createWriteStream(`${path}/qr.svg`));
+    qr_svg.pipe(require("fs").createWriteStream(`${path}/qr.svg`)); // crea la imagen qr y la guarda en la ruta indicada
 }
 
 export const crearSesion = async () => {
 
   let autenticado = false;
-  if(!fs.existsSync(path.join(__dirname,'../.wwebjs_auth/session/session'))){
+  if(!fs.existsSync(path.join(__dirname,'../.wwebjs_auth/session/session'))){ // verifica si existe una carpeta de session de whatsap web
     const cliente = new Client({
       authStrategy: new LocalAuth(),
       puppeteer: {
@@ -76,8 +76,8 @@ export const mandarMensajeWs = async (msg:string)=>{
     cliente.sendMessage(chatId, msg)
   })
 }
-
- async function armarMensaje (fecha:string,telefono:string, cliente:string, pedido:Array<{producto:number,nombreProducto:string,cantidad:number,precio:number,descripcion:string}>, montoTotal:number):Promise<string>{
+// metodo para armar el mensaje que se enviara al whatsap de la persona encargada de recibir los pedidos
+async function armarMensaje (fecha:string,telefono:string, cliente:string, pedido:Array<{producto:number,nombreProducto:string,cantidad:number,precio:number,descripcion:string}>, montoTotal:number):Promise<string>{
 
   let pedidoOrdenado:string = ""
   let montoTo = montoTotal.toString()

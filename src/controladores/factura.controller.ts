@@ -9,8 +9,8 @@ export const obtenerFacturas = async (req:Request,res:Response) =>{
 
     try {
         const facturas = await Factura.find({
-          select:{
-            id:true,
+          select:{             //Opciones para que extraiga datos completos
+            id:true,           //de factura y sus respectivas relaciones
             montoTotal:true,
             fechaHora:true
           },
@@ -51,9 +51,7 @@ export const generarFactura = async (req:Request,res:Response)=>{
             usuario,
             listaPedidos} = req.body;
 
-        // const wsCliente = new WhatsappCliente();
         const buscarUsuario = await Usuario.findOneBy({id:usuario});
-        // let pedidosFactura:Array<Pedido>=[]
         if(!buscarUsuario){
             return res.status(400).json({error:"El usuario que selecciono no existe, ingrese otro nuevamente"});
         }
@@ -68,13 +66,6 @@ export const generarFactura = async (req:Request,res:Response)=>{
           return res.status(406).send(errores);
         } else {
             await factura.save();
-            // await wsCliente.sendMsg('584148942782', "hola adonis")
-                            // .then((response:any)=>{
-                            //   console.log("mensaje enviado", response)
-                            // })
-                            // .catch((e:any)=>{
-                            //   console.log("ocurrio un error whatsapp",e)
-                            // })
         }
 
         listaPedidos.forEach(async (pedido:Pedido) => {  // Una factura puede contener varios pedidos,
@@ -127,7 +118,6 @@ export const modificarFactura = async (req:Request, res:Response)=>{
         if(errores.length > 0){
           return res.status(406).send(errores);
         } else {
-          // await Factura.update({id:parseInt(req.params.id)}, req.body);
           await factura.save()
           res.status(201).json({mensaje:`Factura modificada con el id ${req.params.id}`});
         }

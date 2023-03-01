@@ -32,8 +32,4 @@ export class Foto extends BaseEntity {
     @ManyToOne(()=>Producto, (producto:any)=> producto.foto)
     producto:Producto;
 
-    // static allProperties(){
-    //   return this.createQueryBuilder("Foto")
-    //     .getMany()
-    // }
 }

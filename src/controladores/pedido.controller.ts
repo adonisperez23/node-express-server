@@ -71,7 +71,7 @@ export const nuevoPedido = async (req:Request,res:Response)=>{
         pedido.cantidad = cantidad;
 
         const errores = await validate(pedido, { validationError: { target: false } });
-        
+
         if(errores.length > 0){
           return res.status(406).send(errores);
         } else {
@@ -102,7 +102,6 @@ export const modificarPedido = async (req:Request, res:Response)=>{
         if(errores.length > 0){
           return res.status(406).send(errores)
         } else {
-          // await Pedido.update({id:parseInt(req.params.id)}, req.body);
           await pedido.save()
           res.status(201).json({mensaje:"Pedido modificado"});
         }

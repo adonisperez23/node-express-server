@@ -8,15 +8,15 @@ export const obtenerFotos = async (req:Request,res:Response) =>{
 
     try {
         const fotos = await Foto.find({
-                                  select:{
-                                      id:true,
-                                      nombreFoto:true,
-                                      direccionUrl:true
-                                    },
-                                    relations:{
-                                      producto:true
-                                    }
-                                  });
+                              select:{
+                                  id:true,
+                                  nombreFoto:true,
+                                  direccionUrl:true
+                                },
+                                relations:{
+                                  producto:true
+                                }
+                              });
 
         res.status(200).send(fotos);
     }
@@ -126,7 +126,7 @@ export const cargarImagen = async (req:Request, res:Response) => {
       res.status(200).json({
         mensaje:`Imagen cargada con exito!!`,
         path:req.file!.path,
-        nombreArchivo:req.file!.originalname
+        nombreArchivo:req.file!.originalname      //lanza error possible undefined. el signo de exclamacion omite el error
       })
 
   } catch (error) {
