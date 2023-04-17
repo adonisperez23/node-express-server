@@ -17,6 +17,7 @@ app.use(express.urlencoded({extended:false})); //middleware para que el servidor
 app.use(express.json()); // middleware que hace que el servidor reconozca la informacion recibida al servidor como formato json.
 app.use(morgan('dev')); //muestra las peticiones que llegan al servidor por la consola
 app.use(cors());// permite hacer peticiones entre servidores externos
+app.use('/galeria',express.static('galeria')) // Middleware para obtener imagenes estaticas desde frontend en la carpeta alojada en el backend
 
 
 //rutas para entidad usuario

@@ -28,7 +28,7 @@ export async function enviarCorreo(correo:string, token:string):Promise<any>{
                 <div>
                   <label>Enlace de recuperacion de contraseña</label>
                   <br>
-                  <a href="https://localhost:3000/recuperacion/${token}" target="_blank">Recuperar contraseña</a>
+                  <a href="http://localhost:5173/#/cambiar-clave/${correo}/${token}" target="_blank">Recuperar contraseña</a>
                 </div>
               `
       })

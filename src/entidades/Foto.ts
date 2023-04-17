@@ -14,10 +14,10 @@ export class Foto extends BaseEntity {
 
     @Column({
         type:"varchar",
-        length:20
+        length:50
     })
     @IsNotEmpty({message:"Debe ingresar un nombre para la foto"})
-    @Length(3,20,{message:"El nombre de la foto debe tener mas de 3 caracteres y no mas de 20"})
+    @Length(3,50,{message:"El nombre de la foto debe tener mas de 3 caracteres y no mas de 20"})
     nombreFoto:string;
 
     @Column({

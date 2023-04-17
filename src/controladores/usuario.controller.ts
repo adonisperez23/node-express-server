@@ -95,7 +95,7 @@ export const autenticarUsuario = async (req:Request, res:Response) =>{
         if(ES_CLAVE_VALIDA){
           const payload = {autenticado:true};
           const token = generarToken(payload);
-          res.status(200).json({mensaje:`Usuario autenticado con exito`, token:token});
+          res.status(200).json({mensaje:`Usuario autenticado con exito`, token:token, usuario:usuario});
         } else{
           res.status(401).json({error:"Clave Invalida"});
         }
@@ -125,7 +125,7 @@ export const actualizarUsuario = async (req:Request, res:Response)=>{
         } else {
           // await Usuario.update({id:parseInt(req.params.id)}, req.body);
           usuario.save()
-          res.status(204).json({mensaje:`Usuario creado con el id ${req.params.id}`});
+          res.status(202).json({mensaje:`Usuario actualizado`});
         }
     }catch(error){
         res.status(400).json({mensaje:`Ha ocurrido un error: ${error}`});
@@ -143,7 +143,7 @@ export const eliminarUsuario = async (req:Request, res:Response) =>{
 
         const result = await Usuario.delete({id:parseInt(req.params.id)});
 
-        res.status(204).json({mensaje: "Usuario eliminado con exito", resultado:result})
+        res.status(202).json({mensaje: "Usuario eliminado con exito", resultado:result})
     }catch(error){
         res.status(400).json({error:`Ha ocurrido un error al eliminar usuario: ${error}`})
     }
@@ -207,7 +207,7 @@ export const enviarEmail = async (req:Request, res:Response) =>{
       })
     }
     res.status(200).json({
-      mensaje:`Correo de recuperacion de clave ha sido enviado: ${mensajeEnviado}`
+      mensaje:`Correo de recuperacion de clave ha sido enviado`
     })
 
   } catch (error) {

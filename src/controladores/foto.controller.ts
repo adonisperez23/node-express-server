@@ -2,7 +2,10 @@ import {Request,Response} from "express";
 import {Foto} from "../entidades/Foto";
 import {Producto} from "../entidades/Producto";
 import {validate} from "class-validator";
+const fs = require('fs').promises
 
+const protocoloHttp:string = 'http://' // variable que con tiene el protocolo para agregarlo a la url de las imagenes que se van guardar en el servidor
+const protocoloHttpSecure:string = 'https://'
 
 export const obtenerFotos = async (req:Request,res:Response) =>{
 
@@ -36,7 +39,7 @@ export const obtenerFotoId = async (req:Request, res:Response) => {
                 return res.status(406).json({error:`No existe foto con el ID: ${id}`})
             }
 
-            res.status(200).send(foto)
+            res.status(200).json({foto:foto,hostname:req.headers.host})
         }catch(error){
             res.status(400).json({error:`Ha ocurrido un error al obtener foto por id: ${error}`})
     }
@@ -64,7 +67,7 @@ export const subirFoto = async (req:Request,res:Response)=>{
         const errores = await validate(foto,{ validationError: { target: false } });
 
         if(errores.length > 0){
-          return res.status(406).send(errores);
+          return res.status(406).json({error:`Error de validadion:${errores}`});
         } else {
           await foto.save();
           res.status(201).json({mensaje:"Foto cargada con exito"})
@@ -107,14 +110,22 @@ export const borrarFoto = async (req:Request, res:Response) =>{
 
     try{
         const foto = await Foto.findOneBy({id: parseInt(req.params.id)});
-
+        console.log("headers", req.headers)
         if(!foto){
             return res.status(404).json({error:"La foto que desea eliminar con el id no existe"});
-        };
+        } else {
+          try {
+            await fs.unlink(`./${foto.direccionUrl.replace(`${protocoloHttp}${req.headers.host}/`,"")}`)
+          } catch (error) {
+            console.log("error al eliminar foto de carpeta",error)
+            return res.status(404).json({error:"Ha ocurrido un error al eliminar la foto"})
+          }
+        }
+
 
         const result = await Foto.delete({id:parseInt(req.params.id)});
 
-        res.status(201).json({mensaje:"Foto eliminada!",resultado:result})
+        res.status(201).json({mensaje:"Foto eliminada!"})
     }catch(error){
         res.status(400).json({error:`Ha ocurrido un error al eliminar foto: ${error}`})
     }
@@ -125,7 +136,7 @@ export const cargarImagen = async (req:Request, res:Response) => {
   try {
       res.status(200).json({
         mensaje:`Imagen cargada con exito!!`,
-        path:req.file!.path,
+        path:protocoloHttp+req.headers.host+'/'+req.file!.path,
         nombreArchivo:req.file!.originalname      //lanza error possible undefined. el signo de exclamacion omite el error
       })
 

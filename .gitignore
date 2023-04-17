@@ -13,6 +13,8 @@ llaves.js
 #archivos temporales
 /tmp/*
 !/tmp
+/galeria/*
+!/galeria
 
 #carpeta donde contiene los datos de session de whatsapp web
 /.wwebjs_auth

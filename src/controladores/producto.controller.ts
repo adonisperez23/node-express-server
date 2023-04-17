@@ -58,7 +58,7 @@ export const registrarProducto = async (req:Request,res:Response)=>{
 
         const errores = await validate(producto, { validationError: { target: false } });
         if(errores.length > 0){
-          res.status(406).json(errores);
+          res.status(400).json({error:`ha ocurrido un error ${errores}`});
         } else{
             await producto.save();
             res.status(201).json({mensaje:`Producto creado`});
@@ -95,7 +95,7 @@ export const actualizarProducto = async (req:Request, res:Response)=>{
           return res.status(406).json(errores);
         } else {
           await producto.save()
-          res.status(204).json({mensaje:"Producto modificado"});
+          res.status(200).json({mensaje:"Producto modificado"});
         }
         // await Producto.update({id:parseInt(req.params.id)}, req.body);
 
@@ -115,7 +115,7 @@ export const eliminarProducto = async (req:Request, res:Response) =>{
 
         const result = await Producto.delete({id:parseInt(req.params.id)});
 
-        res.status(204).json({mensaje:"Producto eliminado con exito"})
+        res.status(201).json({mensaje:"Producto eliminado con exito"})
     }catch(error){
         res.status(400).json({error:`Ha ocurrido un error al eliminar producto: ${error}`})
     }

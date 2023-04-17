@@ -14,10 +14,7 @@ export const obtenerFacturas = async (req:Request,res:Response) =>{
             montoTotal:true,
             fechaHora:true
           },
-          relations:{
-            usuario:true,
-            pedido:true
-          }
+          relations:['usuario','pedido','pedido.producto']
         });
 
         res.status(200).send(facturas);
