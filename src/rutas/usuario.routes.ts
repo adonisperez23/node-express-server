@@ -7,7 +7,6 @@ import {
     autenticarUsuario,
     actualizarUsuario,
     eliminarUsuario,
-    iniciarSessionWhatsapp,
     enviarEmail,
     cambiarClave,
     verificarTokenCambioClave
@@ -19,7 +18,6 @@ const router = Router();
 
 router.get('/api/usuarios',verificacionToken,obtenerUsuarios);
 router.get('/api/usuario/:id',obtenerUsuarioId);
-router.get('/api/sesion-whatsapp', iniciarSessionWhatsapp)
 router.post('/api/registrar/usuario',registrarUsuario);
 router.post('/api/autenticar/usuario', autenticarUsuario);
 router.post('/api/enviar',enviarEmail);

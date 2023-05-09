@@ -3,7 +3,12 @@ import {Factura} from "../entidades/Factura";
 import {Usuario} from "../entidades/Usuario";
 import {Pedido} from "../entidades/Pedido";
 import {validate} from "class-validator";
-import {mandarMensajeWs, armarMensaje} from "../utils/clienteWhatsapp.util"
+import {armarMensaje} from "../utils/ordenarMensaje.util"
+import container from "../utils/ioc.util"
+
+const whatsapCliente = container.get('whatsap-client') // Obtenemos la instancia de WhatsAppClient para enviar mensajes
+// const db = container.get('localDataSource')
+
 
 export const obtenerFacturas = async (req:Request,res:Response) =>{
 
@@ -60,7 +65,7 @@ export const generarFactura = async (req:Request,res:Response)=>{
         const errores = await validate(factura,{ validationError: { target: false } })
 
         if(errores.length > 0){
-          return res.status(406).send(errores);
+          return res.status(406).json({error:`Error de validacion ${errores}`});
         } else {
             await factura.save();
         }
@@ -85,10 +90,9 @@ export const generarFactura = async (req:Request,res:Response)=>{
           }
 
         })
-
         const mensaje = await armarMensaje(factura.fechaHora,buscarUsuario.telefono, buscarUsuario.nombre, listaPedidos,factura.montoTotal);
         if(mensaje.length > 0){
-          const mensajeEnviado = await mandarMensajeWs(mensaje);
+          const mensajeEnviado = await whatsapCliente.sendMsg(mensaje,'584148942782');
         }
 
         res.status(201).json({mensaje:`Factura nro: ${factura.id} registrada con exito. Enviando Pedido...`});

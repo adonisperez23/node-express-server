@@ -5,7 +5,6 @@ import {generarHash,compararHash} from "../utils/bcrypHash.util"
 import {enviarCorreo} from "../utils/nodemailTransporter.util"
 import app from "../app";
 import { validate , minLength} from "class-validator";
-import {Client, LocalAuth} from "whatsapp-web.js";
 import {crearSesion} from "../utils/clienteWhatsapp.util"
 // import {image as imageQr} from "qr-image";
 // const path = require('path');
@@ -166,23 +165,6 @@ export const verificacionToken = async (req:Request, res:Response, next:any)=>{
 
 }
 
-export const iniciarSessionWhatsapp = async (req:Request, res:Response)=>{
-
-  try {
-
-    let autenticado = await crearSesion();
-
-    if(autenticado){
-      res.send("Ya existe una session de Whatsapp web")
-    } else {
-      res.send("Iniciando autenticacion de Usuario")
-    }
-
-
-  } catch (error) {
-      console.log(error)
-  }
-}
 
 export const enviarEmail = async (req:Request, res:Response) =>{
 
