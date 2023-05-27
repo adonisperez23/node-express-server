@@ -18,6 +18,7 @@ app.use(express.json()); // middleware que hace que el servidor reconozca la inf
 app.use(morgan('dev')); //muestra las peticiones que llegan al servidor por la consola
 app.use(cors());// permite hacer peticiones entre servidores externos
 app.use('/galeria',express.static('galeria')) // Middleware para obtener imagenes estaticas desde frontend en la carpeta alojada en el backend
+app.use('/sesion',express.static('tmp')) // Middleware para obtener imagenes estaticas desde frontend en la carpeta alojada en el backend
 
 
 //rutas para entidad usuario

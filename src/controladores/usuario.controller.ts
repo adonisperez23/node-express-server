@@ -5,9 +5,6 @@ import {generarHash,compararHash} from "../utils/bcrypHash.util"
 import {enviarCorreo} from "../utils/nodemailTransporter.util"
 import app from "../app";
 import { validate , minLength} from "class-validator";
-import {crearSesion} from "../utils/clienteWhatsapp.util"
-// import {image as imageQr} from "qr-image";
-// const path = require('path');
 
 export const holaMundo = (req:Request,res:Response) =>{
     res.send("hola mundo");

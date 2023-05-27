@@ -45,6 +45,34 @@ export const obtenerFacturaId = async (req:Request, res:Response) => {
             res.status(400).json({error:`Ha ocurrido un error al buscar factura: ${error}`})
     }
 }
+export const obtenerListaFacturaPorIdUsuario = async (req:Request, res:Response) => {
+
+        try {
+            const {id} = req.params;
+
+            const facturas = await Factura.find({
+              select:{             //Opciones para que extraiga datos completos
+                id:true,           //de factura y sus respectivas relaciones
+                montoTotal:true,
+                fechaHora:true
+              },
+              relations:['usuario','pedido','pedido.producto'],
+              where:{
+                usuario:{
+                  id:+id
+                }
+              }
+            });
+
+            if(facturas.length === 0){
+                return res.status(406).json({error:`El usuario no ha realizado facturas por los momentos`})
+            }
+
+            res.status(200).send(facturas)
+        }catch(error){
+            res.status(400).json({error:`Ha ocurrido un error al buscar factura: ${error}`})
+    }
+}
 
 export const generarFactura = async (req:Request,res:Response)=>{
 

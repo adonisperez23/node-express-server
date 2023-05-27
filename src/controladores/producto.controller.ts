@@ -1,5 +1,7 @@
 import {Request,Response} from "express";
 import {Producto} from "../entidades/Producto";
+import {Pedido} from "../entidades/Pedido";
+import {Foto} from "../entidades/Foto";
 import {validate} from "class-validator";
 
 export const obtenerProductos = async (req:Request,res:Response) =>{
@@ -11,6 +13,45 @@ export const obtenerProductos = async (req:Request,res:Response) =>{
     }
     catch(error){
         res.status(404).json({error:`Ha ocurrido un error al obtener productos: ${error}`})
+    }
+}
+
+// API que verifica si un registro de producto tiene algun registro con otra tabla relacionada
+export const verificarRelacionesProducto = async (req:Request,res:Response) =>{
+
+  let relacionadoConPedido:boolean
+  let relacionadoConFoto:boolean
+
+    try {
+        const {productoId} = req.params// recibe id del producto a verificar
+        const pedidos = await Pedido.find({
+          select:{
+            id:true,
+          },
+          relations:{
+            producto:true,
+          }
+        });; // lista Pedidos
+        const fotos = await Foto.find({
+          select:{
+            id:true
+          },
+          relations:{
+            producto:true
+          }
+        }); // lista fotos
+
+        relacionadoConPedido = pedidos.some(pedido => pedido.producto.id === +productoId)
+        relacionadoConFoto = pedidos.some(foto => foto.producto.id === +productoId)
+
+        if(relacionadoConPedido || relacionadoConFoto){
+          res.status(200).json({mensaje:true});
+        }
+        res.status(200).json({mensaje:false});
+
+    }
+    catch(error){
+        res.status(404).json({error:"Error al Verificar relaciones de productos"})
     }
 }
 
