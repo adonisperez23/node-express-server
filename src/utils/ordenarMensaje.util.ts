@@ -10,7 +10,7 @@ async function armarMensaje (fecha:string,telefono:string, cliente:string, pedid
     let monto = (articulo.precio * articulo.cantidad).toString()
 
     pedidoOrdenado += `\n${articulo.nombreProducto}  \n ${articulo.descripcion}\n
-                                   ${cantidadArticulo}         ${precioArticulo}        ${monto} \n`
+                            ${cantidadArticulo}               $${precioArticulo}                $${monto} \n`
 
   })
 
@@ -21,7 +21,7 @@ Telefono: ${telefono}\n
 Pedido: \n
 Descripcion   Cantidad   Precio    Monto
 ${pedidoOrdenado} \n
-Monto Total: ${montoTo}`
+Monto Total: $${montoTo}`
 
 }
 

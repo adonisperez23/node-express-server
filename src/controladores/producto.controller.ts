@@ -3,6 +3,7 @@ import {Producto} from "../entidades/Producto";
 import {Pedido} from "../entidades/Pedido";
 import {Foto} from "../entidades/Foto";
 import {validate} from "class-validator";
+import { capitalize } from 'capitalize-ts';
 
 export const obtenerProductos = async (req:Request,res:Response) =>{
 
@@ -91,8 +92,8 @@ export const registrarProducto = async (req:Request,res:Response)=>{
             precio = 0
         }
 
-        producto.nombreProducto = nombreProducto;
-        producto.categoria = categoria;
+        producto.nombreProducto = capitalize(nombreProducto);
+        producto.categoria = capitalize(categoria);
         producto.descripcion = descripcion;
         producto.precio = precio;
         producto.disponible = disponible;

@@ -47,7 +47,6 @@ export class Producto extends BaseEntity {
 
     @Column("numeric")
     @IsNotEmpty({message:"Ingrese precio del producto"})
-    @IsInt({message:"El precio ingresado debe ser un numero entero"})
     @Max(15,{message:"El precio no debe exceder de mas 15 dolares"})
     precio:number;
 
