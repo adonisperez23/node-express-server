@@ -19,7 +19,6 @@ export class Factura extends BaseEntity {
     @Column("numeric")
     @IsNotEmpty({message:"Debe ingresar el monto total de la factura"})
     @IsPositive({message:"Debe ser un numero positivo"})
-    @IsInt({message:"Debe ser un numero entero"})
     @Max(1000,{message:"El monto no puede superar los 1000 dolares"})
     montoTotal:number;
 

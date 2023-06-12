@@ -4,11 +4,12 @@ import {Usuario} from "../entidades/Usuario";
 import {Pedido} from "../entidades/Pedido";
 import {validate} from "class-validator";
 import {armarMensaje} from "../utils/ordenarMensaje.util"
-import container from "../utils/ioc.util"
+// import container from "../utils/ioc.util"
+
 
 const queryString = require('querystring')
 
-const whatsapCliente = container.get('whatsap-client') // Obtenemos la instancia de WhatsAppClient para enviar mensajes
+// const whatsapCliente = container.get('whatsap-client') // Obtenemos la instancia de WhatsAppClient para enviar mensajes
 // const db = container.get('localDataSource')
 
 
@@ -92,6 +93,7 @@ export const generarFactura = async (req:Request,res:Response)=>{
         factura.usuario = usuario;
         factura.montoTotal = listaPedidos.reduce((acum:number,pedido:Pedido)=>{ return acum + (pedido.precio * pedido.cantidad)},0);
 
+
         const errores = await validate(factura,{ validationError: { target: false } })
 
         if(errores.length > 0){
@@ -120,11 +122,12 @@ export const generarFactura = async (req:Request,res:Response)=>{
           }
 
         })
+
         const mensaje = await armarMensaje(factura.fechaHora,buscarUsuario.telefono, buscarUsuario.nombre, listaPedidos,factura.montoTotal);
         if(mensaje.length > 0){
           // const mensajeEnviado = await whatsapCliente.sendMsg(mensaje,'584148942782');// debido a problemas de consistencia con el modulo de apiwhatsapp, se usara whatsap link para enviar pedidos por whatsap
-          const mensajeEnviado = queryString.escape(mensaje)
-          res.status(201).json(
+          const mensajeEnviado = queryString.escape(mensaje) //codifica el string en utf-8 para enviar el mensaje por el url de whatsap link
+          return res.status(201).json(
             {
               mensaje:`Factura nro: ${factura.id} registrada con exito. Enviando Pedido...`,
               mensajeEncoded:mensajeEnviado

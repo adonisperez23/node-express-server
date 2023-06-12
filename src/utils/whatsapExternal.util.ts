@@ -1,6 +1,5 @@
 import {Client, LocalAuth} from "whatsapp-web.js";
 import {image as imageQr} from "qr-image";
-import {localDataSource} from '../db'
 
 export class WhatsAppClient extends Client {
   private status = false;

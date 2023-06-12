@@ -23,8 +23,6 @@ export class Pedido extends BaseEntity{
 
     @Column("numeric")
     @IsNotEmpty({message:"Debe ingresarle un precio al pedido"})
-    @IsInt({message:"El valor ingresado debe ser un numero entero"})
-    @IsPositive({message:"El valor no puede ser un numero negativo"})
     @Max(15,{message:"El precio no puede ser mas de 15 dolares"})
     precio: number;
 
