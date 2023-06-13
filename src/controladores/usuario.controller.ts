@@ -6,9 +6,6 @@ import {enviarCorreo} from "../utils/nodemailTransporter.util"
 import app from "../app";
 import { validate , minLength} from "class-validator";
 
-export const holaMundo = (req:Request,res:Response) =>{
-    res.send("hola mundo");
-}
 
 export const obtenerUsuarios = async (req:Request, res:Response)=>{
     try{
@@ -149,7 +146,7 @@ export const verificacionToken = async (req:Request, res:Response, next:any)=>{
     let token = req.headers['authorization'];
 
     if(!token){
-        return res.status(403).json({mensaje:`Es necesario un token de autorizacion`})
+        return res.status(400).json({error:`Es necesario un token de autorizacion`})
     }
     token = token.slice(7, token.length)
     console.log("token arreglado ", token)
@@ -157,7 +154,7 @@ export const verificacionToken = async (req:Request, res:Response, next:any)=>{
         let decodificar = await verificarToken(token)
         if(decodificar){next()}
     }catch(error){
-        res.json({error:"Token invalido"})
+        res.status(400).json({error:"Token invalido o caducado los 7 dias de vigencia, reinicie sesion para obtener nuevo token"})
     }
 
 }
