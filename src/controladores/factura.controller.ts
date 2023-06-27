@@ -126,6 +126,7 @@ export const generarFactura = async (req:Request,res:Response)=>{
         const mensaje = await armarMensaje(factura.fechaHora,buscarUsuario.telefono, buscarUsuario.nombre, listaPedidos,factura.montoTotal);
         if(mensaje.length > 0){
           // const mensajeEnviado = await whatsapCliente.sendMsg(mensaje,'584148942782');// debido a problemas de consistencia con el modulo de apiwhatsapp, se usara whatsap link para enviar pedidos por whatsap
+          // console.log("mensaje",mensaje)
           const mensajeEnviado = queryString.escape(mensaje) //codifica el string en utf-8 para enviar el mensaje por el url de whatsap link
           return res.status(201).json(
             {
