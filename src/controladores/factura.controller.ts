@@ -67,9 +67,9 @@ export const obtenerListaFacturaPorIdUsuario = async (req:Request, res:Response)
               }
             });
 
-            if(facturas.length === 0){
-                return res.status(406).json({error:`El usuario no ha realizado facturas por los momentos`})
-            }
+            // if(facturas.length === 0){
+            //     return res.status(406).json({error:`El usuario no ha realizado facturas por los momentos`})
+            // }
 
             res.status(200).send(facturas)
         }catch(error){
