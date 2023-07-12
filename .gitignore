@@ -1,14 +1,12 @@
 #modulos de node
 node_modules
-
+.env
 # carpeta donde estan los compilados
 dist
 
 #Achivos de configuracion de la base de datos
 db.ts
 db.js
-#llave secreta de jwt
-llaves.js
 
 #archivos temporales
 /tmp/*

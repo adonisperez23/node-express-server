@@ -26,7 +26,7 @@ export async function enviarCorreo(correo:string, token:string):Promise<any>{
         subject:"Recuperacion de contraseña",
         html:`
                 <div>
-                  <label>Enlace de recuperacion de contraseña</label>
+                  <label>Enlace de recuperacion de contraseña para su cuenta de la App del Rest Los cinco sabores</label>
                   <br>
                   <a href="http://localhost:5173/#/cambiar-clave/${correo}/${token}" target="_blank">Recuperar contraseña</a>
                 </div>

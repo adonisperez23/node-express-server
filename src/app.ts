@@ -7,10 +7,10 @@ import rutasFoto from "./rutas/foto.routes"
 import rutasFactura from "./rutas/factura.routes"
 import rutasPedido from "./rutas/pedido.routes"
 
+
 const llaves = require("../llaves")
 //instanciacion del modulo de express en la variable app
 const app = express();
-
 
 app.set('llave',llaves.llave); // establece la clave con el contenido de la variable llaves usadas con el modulo jsonWebToken
 app.use(express.urlencoded({extended:false})); //middleware para que el servidor renozca peticiones como objetos de string o arrays
@@ -19,7 +19,6 @@ app.use(morgan('dev')); //muestra las peticiones que llegan al servidor por la c
 app.use(cors());// permite hacer peticiones entre servidores externos
 app.use('/galeria',express.static('galeria')) // Middleware para obtener imagenes estaticas desde frontend en la carpeta alojada en el backend
 app.use('/sesion',express.static('tmp')) // Middleware para obtener imagenes estaticas desde frontend en la carpeta alojada en el backend
-
 
 //rutas para entidad usuario
 app.use(rutasUsuario)

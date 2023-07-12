@@ -51,9 +51,9 @@ export const subirFoto = async (req:Request,res:Response)=>{
         let {
             nombreFoto,
             direccionUrl,
-            producto} = req.body;
+            id} = req.body;
 
-        const buscarProducto = await Producto.findOneBy({id:producto});
+        const buscarProducto = await Producto.findOneBy({id:id});
 
         if(!buscarProducto){
             return res.status(400).json({error:"El producto que selecciono no existe, ingrese otro nuevamente"});
@@ -62,7 +62,7 @@ export const subirFoto = async (req:Request,res:Response)=>{
 
         foto.nombreFoto = nombreFoto;
         foto.direccionUrl = direccionUrl;
-        foto.producto = producto;
+        foto.producto = id;
 
         const errores = await validate(foto,{ validationError: { target: false } });
 

@@ -46,9 +46,10 @@ export const verificarRelacionesProducto = async (req:Request,res:Response) =>{
         relacionadoConFoto = pedidos.some(foto => foto.producto.id === +productoId)
 
         if(relacionadoConPedido || relacionadoConFoto){
-          res.status(200).json({mensaje:true});
+          res.status(200).json({estaRelacionado:true});
+        } else {
+          res.status(200).json({estaRelacionado:false});
         }
-        res.status(200).json({mensaje:false});
 
     }
     catch(error){
