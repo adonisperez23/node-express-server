@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 const llaves = require('../../llaves');
-
+require('dotenv').config()
 //Modulo para enviar correos electronicos
   let transportador = nodemailer.createTransport({
     host:'smtp.gmail.com', // HOST del Servicio smtp de google
@@ -28,7 +28,7 @@ export async function enviarCorreo(correo:string, token:string):Promise<any>{
                 <div>
                   <label>Enlace de recuperacion de contraseña para su cuenta de la App del Rest Los cinco sabores</label>
                   <br>
-                  <a href="http://localhost:5173/#/cambiar-clave/${correo}/${token}" target="_blank">Recuperar contraseña</a>
+                  <a href="${process.env.URL_EMAIL_FOR_SENDING_RECOVERY_PASSWORD}cambiar-clave/${correo}/${token}" target="_blank">Recuperar contraseña</a>
                 </div>
               `
       })
