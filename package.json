@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "node ./dist/app.js",
+    "start": "node ./dist/index.js",
     "dev": "ts-node-dev --respawn ./src/index.ts",
     "typeorm": "typeorm-ts-node-esm"
   },
