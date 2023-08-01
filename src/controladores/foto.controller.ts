@@ -3,9 +3,8 @@ import {Foto} from "../entidades/Foto";
 import {Producto} from "../entidades/Producto";
 import {validate} from "class-validator";
 const fs = require('fs').promises
+require('dotenv').config()
 
-const protocoloHttp:string = 'http://' // variable que con tiene el protocolo para agregarlo a la url de las imagenes que se van guardar en el servidor
-const protocoloHttpSecure:string = 'https://'
 
 export const obtenerFotos = async (req:Request,res:Response) =>{
 
@@ -115,7 +114,7 @@ export const borrarFoto = async (req:Request, res:Response) =>{
             return res.status(404).json({error:"La foto que desea eliminar con el id no existe"});
         } else {
           try {
-            await fs.unlink(`./${foto.direccionUrl.replace(`${protocoloHttp}${req.headers.host}/`,"")}`)
+            await fs.unlink(`./${foto.direccionUrl.replace(`${process.env.PROTOCOLO_HTTP}${process.env.IP_SERVER}/`,"")}`)
           } catch (error) {
             console.log("error al eliminar foto de carpeta",error)
             return res.status(404).json({error:"Ha ocurrido un error al eliminar la foto"})
@@ -134,11 +133,15 @@ export const borrarFoto = async (req:Request, res:Response) =>{
 export const cargarImagen = async (req:Request, res:Response) => {
 
   try {
-      res.status(200).json({
-        mensaje:`Imagen cargada con exito!!`,
-        path:protocoloHttp+req.headers.host+'/'+req.file!.path,
-        nombreArchivo:req.file!.originalname      //lanza error possible undefined. el signo de exclamacion omite el error
-      })
+
+      if(process.env.PROTOCOLO_HTTP != undefined && process.env.IP_SERVER != undefined){
+        res.status(200).json({
+          mensaje:`Imagen cargada con exito!!`,
+          path:process.env.PROTOCOLO_HTTP+process.env.IP_SERVER+'/'+req.file!.path,
+          nombreArchivo:req.file!.originalname      //lanza error possible undefined. el signo de exclamacion omite el error
+        })
+      }
+
 
   } catch (error) {
     res.status(400).json({error:"Ha ocurrido un error al cargar imagen"})
