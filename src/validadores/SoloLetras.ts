@@ -3,7 +3,7 @@ import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments 
 @ValidatorConstraint({ name: 'soloLetras', async: false })
 export class SoloLetras implements ValidatorConstraintInterface {
   validate(text: string, args: ValidationArguments) {
-    const expresionRegular = new RegExp(/^([A-Z]+\s?){4}?$/, 'i') // valida que la entrada sea solo letras
+    const expresionRegular = new RegExp(/^([a-zA-ZÁ-ÿ\u00f1\u00d1]+\s?){4}?$/, 'i') // valida que la entrada sea solo letras
     return expresionRegular.test(text); // for async validations you must return a Promise<boolean> here
   }
 
