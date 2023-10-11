@@ -36,7 +36,7 @@ Pedido: \n
 Descripcion   Precio   Cantidad    Monto
 ${pedidoOrdenado} \n
 Monto Total: $${montoTo}\n
-Taza dolarParalelo: ${precioDolar}\n
+Taza BCV: ${precioDolar}\n
 Total Monto en Bolivares: ${montoTotalBolivares} BS\n
 Datos de Pago movil: \n
 Tlf: 0424-9683161

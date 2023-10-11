@@ -1,7 +1,48 @@
-const axios = require('axios')
-const cheerio = require('cheerio')
+// import puppeteer from 'puppeteer'
+import axios from "axios"
+import cheerio from "cheerio"
 
 
+// async function obtenerValorDolarPuppeteer():Promise<string> {
+//     try {
+//
+//       let error:string = "Error al obtener valor del dolar"
+//
+//       const browser = await puppeteer.launch({
+//         headless: "new",
+//         args: ['--no-sandbox', '--disable-setuid-sandbox'],
+//         // opcion para que abra el navegador por detras del programa, se coloca false para que abra el navegador y se observe las aplicaciones
+//         slowMo:2500 //tiempo para que demore mas al hacer las operaciones
+//       })
+//       const page = await browser.newPage()
+//
+//       await page.goto('https://www.bcv.org.ve')
+//       // await page.setDefaultNavigationTimeout(0)
+//
+//
+//       const valorDolar = await page.evaluate(()=>{
+//         const listaElementos = document.querySelectorAll<HTMLElement>('strong')
+//         const precioDolar = listaElementos[6].innerText
+//
+//         return precioDolar
+//
+//       })
+//
+//       await browser.close()
+//
+//       if(valorDolar.length > 0){
+//
+//         const precioDolar:string = valorDolar.slice(0,5)
+//         return precioDolar
+//       } else {
+//         return error
+//       }
+//     } catch (error) {
+//       console.log(error)
+//       return "Error al obtener valor del dolar"
+//     }
+//
+// }
 
 async function obtenerValorDolar():Promise<string> {
 
@@ -16,7 +57,7 @@ async function obtenerValorDolar():Promise<string> {
     })
     const $ = cheerio.load(axiosResponse.data)
 
-    const promedios = $('h4:contains("@EnParaleloVzla3")').siblings()
+    const promedios = $('h3:contains("@EnParaleloVzla3")').siblings()
     const dolar = $(promedios).each((index:number,element:any)=>{
       if(element.name === 'p'){
         valorDolar = element.children[0].data
@@ -32,6 +73,8 @@ async function obtenerValorDolar():Promise<string> {
 
     // console.log("dolar", precioDolar, numberDolar)
 }
+
+
 
 
 
